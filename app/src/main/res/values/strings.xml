@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Photos</string>
     <string name="album">AlbumName</string>
+    <string name="addAlbum">Add New Album</string>
 
 
 </resources>
