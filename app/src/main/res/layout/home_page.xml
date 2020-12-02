@@ -6,17 +6,16 @@
     android:layout_height="match_parent">
 
     <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="184dp"
-        tools:layout_editor_absoluteY="160dp">
+        android:layout_width="396dp"
+        android:layout_height="728dp"
+        tools:layout_editor_absoluteX="4dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <TextView
-                android:text="@string/album"
-            />
+            android:layout_height="match_parent">
+
+            <TextView android:text="@string/album" />
 
         </TableRow>
 
