@@ -9,6 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Photos">
+        <activity
+            android:name=".SelectedAlbumView"
+            android:parentActivityName=".Photos"
+            android:label="@string/title_activity_selected_album_view"
+            android:theme="@style/Theme.Photos.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Photos"/>
+        </activity>
         <activity android:name=".Photos">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
