@@ -6,7 +6,7 @@
     android:layout_marginTop="?attr/actionBarSize">
 
     <TextView
-        android:id="+id/album_name"
+        android:id="@+id/album_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ff0000"
