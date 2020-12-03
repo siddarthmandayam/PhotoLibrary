@@ -2,8 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:appcompat="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/add_album_action"
-        android:icon="@drawable/add_album_icon"
-        android:title="@string/addAlbum"
-        appcompat:showAsAction="always"/>
+        android:icon="@drawable/add_icon"
+        android:title="@string/add"
+        appcompat:showAsAction="always"
+        />
 
 </menu>

@@ -1,7 +1,6 @@
 package com.example.photos;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -9,8 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -28,7 +25,7 @@ public class Photos extends AppCompatActivity {
     private ListView listOfAlbums;
 
     //internal storage that will populate the listview
-    private List<Album> userAlbums;
+    private ArrayList<Album> userAlbums;
 
 
     @Override
@@ -122,12 +119,11 @@ public class Photos extends AppCompatActivity {
         Bundle bundle = new Bundle();
 
         //add mapping "selected_album" -> userAlbum[position]
-        bundle.putSerializable("selected_album", userAlbums.get(position));
+        //bundle.putParcelableArrayList("allAlbums", userAlbums);
+        //bundle.putInt("position", position);
         Intent intent = new Intent(this, SelectedAlbumView.class);
-        intent.putExtras(bundle);
+        intent.putParcelableArrayListExtra("allAlbums", userAlbums);
+        intent.putExtra("position", position);
         startActivity(intent);
-
-
-
     }
 }

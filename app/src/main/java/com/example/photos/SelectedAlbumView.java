@@ -1,19 +1,23 @@
 package com.example.photos;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class SelectedAlbumView extends AppCompatActivity {
 
+    ArrayList<Album> allAlbums;
+    int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,31 +28,54 @@ public class SelectedAlbumView extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // get the name and detail from bundle
+        allAlbums = getIntent().getExtras().getParcelableArrayList("allAlbums");
+        position = getIntent().getExtras().getInt("position");
 
-        Bundle bundle = getIntent().getExtras();
-        // get album name
-        // get photos in album
+        System.out.println(allAlbums.get(position));
 
-        TextView albumNameView = findViewById(R.id.album_name);
+
+
+
         GridView albumThumbnails = findViewById(R.id.grid_view);
 
-        // set album name text: albumNameView.setText(albumName);
-        // set grid view
 
-
-
-        /* floating action button plan to use as add photo button
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-         */
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.album_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.add_photo_action:
+                promptUserAddNewPhoto();
+                return true;
+            case R.id.search_photos_action:
+                promptUserSearchQuery();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void promptUserAddNewPhoto(){
+
+
+    }
+    private void promptUserSearchQuery(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        EditText input = new EditText(this);
+        input.setHint("Enter query here ");
+        builder.setView(input);
+        builder.setPositiveButton("Search by Location", ((dialog, which) -> transitionToSearchResults(0, input.getText().toString())));
+        builder.setNegativeButton("Search by Person", ((dialog, which) -> transitionToSearchResults(1, input.getText().toString())));
+        builder.setNeutralButton("Cancel", ((dialog, which) -> dialog.cancel()));
+        builder.show();
+
+    }
+    private void transitionToSearchResults(int mode, String searchQuery){
+
+    }
+
 }
