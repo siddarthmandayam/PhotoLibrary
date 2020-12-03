@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/add_tag_action"
+        android:icon="@drawable/add_icon"
+        android:title="@string/add"
+        appcompat:showAsAction="always" />
+    <item android:id="@+id/delete_photo_action"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:title="@string/delete"
+        appcompat:showAsAction="always"/>
+
+
+</menu>
