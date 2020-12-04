@@ -5,6 +5,11 @@
         android:icon="@drawable/add_icon"
         android:title="@string/add"
         appcompat:showAsAction="always" />
+    <item android:id="@+id/delete_tag_action"
+        android:icon="@drawable/ic_baseline_remove_24"
+        android:title="delete_tag"
+        appcompat:showAsAction="always"
+        />
     <item android:id="@+id/delete_photo_action"
         android:icon="@drawable/ic_baseline_delete_24"
         android:title="@string/delete"

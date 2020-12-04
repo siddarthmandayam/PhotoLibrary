@@ -17,14 +17,6 @@
         android:id="@+id/include"
         layout="@layout/content_selected_photo" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="235dp"
+            android:layout_marginStart="184dp"
             android:layout_marginBottom="165dp"
             android:text="TextView" />
 
@@ -56,10 +48,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="11dp"
-            android:layout_marginBottom="396dp"
-            android:text="Next"
-            android:onClick="nextPhoto" />
+            android:layout_marginEnd="-8dp"
+            android:layout_marginBottom="346dp"
+            android:onClick="nextPhoto"
+            android:text="Next" />
 
         <Button
             android:id="@+id/previous"
@@ -67,20 +59,20 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="389dp"
-            android:text="Previous"
-            android:onClick="previousPhoto"/>
+            android:layout_marginStart="-17dp"
+            android:layout_marginTop="305dp"
+            android:onClick="previousPhoto"
+            android:text="Previous" />
 
     </RelativeLayout>
 
     <ImageView
         android:id="@+id/selectedPhoto"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:contentDescription="TODO"
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="center"
-        app:srcCompat="@android:drawable/screen_background_light"
-        android:contentDescription="TODO" />
+        app:srcCompat="@android:drawable/screen_background_light" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
