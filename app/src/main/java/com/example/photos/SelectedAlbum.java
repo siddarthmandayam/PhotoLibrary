@@ -79,9 +79,9 @@ public class SelectedAlbum extends AppCompatActivity {
             Uri selectedImage = data.getData();
             System.out.println(selectedImage);
 
-            //int flags = data.getFlags();
-            //ContentResolver resolver = this.getContentResolver();
-            //resolver.takePersistableUriPermission(selectedImage, flags);
+            int flags = data.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;;
+            ContentResolver resolver = this.getContentResolver();
+            resolver.takePersistableUriPermission(selectedImage, flags);
 
             /*
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -101,8 +101,8 @@ public class SelectedAlbum extends AppCompatActivity {
             thumbnailGrid.invalidate();
 
 
-            //System.out.println("SAVING DATA...");
-            //saveData();
+            System.out.println("SAVING DATA...");
+            saveData();
 
 
         }
@@ -131,9 +131,9 @@ public class SelectedAlbum extends AppCompatActivity {
 
     private void promptUserAddNewPhoto(){
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("image/*");
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setType("image/*");
 
         //Intent intent = new Intent();
         //intent.setType("image/*");
