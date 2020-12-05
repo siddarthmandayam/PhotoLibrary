@@ -1,15 +1,14 @@
-package com.example.photos;
+package com.example.photos.model;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import com.example.photos.model.Photo;
 
 import java.util.ArrayList;
 

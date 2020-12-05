@@ -1,23 +1,24 @@
-package com.example.photos;
+package com.example.photos.activities;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 
+import com.example.photos.R;
+import com.example.photos.model.Album;
+import com.example.photos.model.ImageAdapter;
+import com.example.photos.model.Photo;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

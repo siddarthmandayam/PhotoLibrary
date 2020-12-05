@@ -1,15 +1,13 @@
-package com.example.photos;
+package com.example.photos.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Album implements Parcelable {
-    String name;
-    ArrayList<Photo> photos;
+    public String name;
+    public ArrayList<Photo> photos;
     public Album(String name, ArrayList<Photo> photos){
         this.name = name;
         this.photos = photos;

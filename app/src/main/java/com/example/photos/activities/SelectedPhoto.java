@@ -1,11 +1,11 @@
-package com.example.photos;
+package com.example.photos.activities;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.photos.R;
+import com.example.photos.model.Album;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

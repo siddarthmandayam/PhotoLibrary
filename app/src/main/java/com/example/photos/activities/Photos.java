@@ -1,4 +1,4 @@
-package com.example.photos;
+package com.example.photos.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.example.photos.R;
+import com.example.photos.model.Album;
+import com.example.photos.model.Photo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

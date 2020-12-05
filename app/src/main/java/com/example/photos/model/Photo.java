@@ -1,14 +1,13 @@
-package com.example.photos;
+package com.example.photos.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 public class Photo implements Parcelable {
-    String photoPath;
-    HashMap<String, String> tags;
+    public String photoPath;
+    public HashMap<String, String> tags;
     public Photo(String photoPath, HashMap<String,String> tags){
         this.photoPath = photoPath;
         this.tags = tags;
