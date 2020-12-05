@@ -123,8 +123,6 @@ public class SelectedAlbum extends AppCompatActivity {
             case R.id.add_photo_action:
                 promptUserAddNewPhoto();
                 return true;
-            case R.id.search_photos_action:
-                promptUserSearchQuery();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -149,20 +147,8 @@ public class SelectedAlbum extends AppCompatActivity {
 
 
     }
-    private void promptUserSearchQuery(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        EditText input = new EditText(this);
-        input.setHint("Enter query here ");
-        builder.setView(input);
-        builder.setPositiveButton("Search by Location", ((dialog, which) -> transitionToSearchResults(0, input.getText().toString())));
-        builder.setNegativeButton("Search by Person", ((dialog, which) -> transitionToSearchResults(1, input.getText().toString())));
-        builder.setNeutralButton("Cancel", ((dialog, which) -> dialog.cancel()));
-        builder.show();
 
-    }
-    private void transitionToSearchResults(int mode, String searchQuery){
 
-    }
 
     private void saveData(){
         SharedPreferences sharedP = getSharedPreferences("shared preferences", MODE_PRIVATE);

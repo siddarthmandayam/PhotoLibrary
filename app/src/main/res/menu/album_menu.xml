@@ -5,9 +5,5 @@
         android:icon="@drawable/add_icon"
         android:title="@string/add"
         appcompat:showAsAction="always" />
-    <item android:id="@+id/search_photos_action"
-        android:icon="@drawable/search_icon"
-        android:title="@string/add"
-        appcompat:showAsAction="always"/>
 
 </menu>
