@@ -113,6 +113,16 @@ public class Photos extends AppCompatActivity {
         if(userAlbums == null)
             userAlbums = new ArrayList<Album>();
 
+        System.out.println("LOADING FOLLOWING DATA: ");
+
+        for(Album album: userAlbums){
+            System.out.println(album.name + " - ");
+            for(Photo photo: album.photos){
+                System.out.println("path: " + photo.photoPath);
+                System.out.println("tags: " + photo.tags);
+            }
+        }
+
     }
     //Pass the selected album information
     private void transitionToTheSelectedAlbum(int position){

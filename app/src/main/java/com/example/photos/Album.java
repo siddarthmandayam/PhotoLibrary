@@ -44,12 +44,7 @@ public class Album implements Parcelable {
     };
 
     public String toString(){
-        StringBuilder sb = new StringBuilder();
-        sb.append(name);
-        sb.append("\n");
-        if(photos != null)
-            sb.append(photos.toString());
-        return sb.toString();
+        return name;
     }
 
 

@@ -3,6 +3,7 @@ package com.example.photos;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,9 +79,9 @@ public class SelectedAlbum extends AppCompatActivity {
             Uri selectedImage = data.getData();
             System.out.println(selectedImage);
 
-            int flags = data.getFlags();
-            ContentResolver resolver = this.getContentResolver();
-            resolver.takePersistableUriPermission(selectedImage, flags);
+            //int flags = data.getFlags();
+            //ContentResolver resolver = this.getContentResolver();
+            //resolver.takePersistableUriPermission(selectedImage, flags);
 
             /*
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -96,6 +99,10 @@ public class SelectedAlbum extends AppCompatActivity {
             allAlbums.get(position).photos.add(new Photo(selectedImage.toString(), new HashMap<String,String>()));
             adapter.notifyDataSetChanged();
             thumbnailGrid.invalidate();
+
+
+            System.out.println("SAVING DATA...");
+            saveData();
 
 
         }
@@ -155,5 +162,15 @@ public class SelectedAlbum extends AppCompatActivity {
     private void transitionToSearchResults(int mode, String searchQuery){
 
     }
+
+    private void saveData(){
+        SharedPreferences sharedP = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedP.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(allAlbums);
+        editor.putString("data", json);
+        editor.apply();
+    }
+
 
 }
