@@ -109,7 +109,6 @@ public class Photos extends AppCompatActivity {
         String json = sharedP.getString("data", null);
         Type type = new TypeToken<List<Album>>(){}.getType();
         userAlbums = gson.fromJson(json, type);
-        userAlbums = null;
 
         if(userAlbums == null)
             userAlbums = new ArrayList<Album>();
@@ -118,6 +117,7 @@ public class Photos extends AppCompatActivity {
 
         for(Album album: userAlbums){
             System.out.println(album.name + " - ");
+            if(album.photos != null)
             for(Photo photo: album.photos){
                 System.out.println("path: " + photo.photoPath);
                 System.out.println("tags: " + photo.tags);
