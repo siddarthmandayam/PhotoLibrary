@@ -101,8 +101,8 @@ public class SelectedAlbum extends AppCompatActivity {
             thumbnailGrid.invalidate();
 
 
-            System.out.println("SAVING DATA...");
-            saveData();
+            //System.out.println("SAVING DATA...");
+            //saveData();
 
 
         }

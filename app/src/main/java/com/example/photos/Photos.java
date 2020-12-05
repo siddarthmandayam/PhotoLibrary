@@ -109,6 +109,7 @@ public class Photos extends AppCompatActivity {
         String json = sharedP.getString("data", null);
         Type type = new TypeToken<List<Album>>(){}.getType();
         userAlbums = gson.fromJson(json, type);
+        userAlbums = null;
 
         if(userAlbums == null)
             userAlbums = new ArrayList<Album>();
