@@ -20,7 +20,7 @@ import android.widget.GridView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SelectedAlbumView extends AppCompatActivity {
+public class SelectedAlbum extends AppCompatActivity {
 
     ArrayList<Album> allAlbums;
     int position;

@@ -124,7 +124,7 @@ public class Photos extends AppCompatActivity {
 
 
         //pass in all albums, and specific chosen album
-        Intent intent = new Intent(this, SelectedAlbumView.class);
+        Intent intent = new Intent(this, SelectedAlbum.class);
         intent.putParcelableArrayListExtra("allAlbums", userAlbums);
         intent.putExtra("position", position);
         startActivity(intent);
