@@ -121,6 +121,9 @@ public class Photos extends AppCompatActivity {
         //add mapping "selected_album" -> userAlbum[position]
         //bundle.putParcelableArrayList("allAlbums", userAlbums);
         //bundle.putInt("position", position);
+
+
+        //pass in all albums, and specific chosen album
         Intent intent = new Intent(this, SelectedAlbumView.class);
         intent.putParcelableArrayListExtra("allAlbums", userAlbums);
         intent.putExtra("position", position);

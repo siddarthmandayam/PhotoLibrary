@@ -9,8 +9,8 @@ import java.util.List;
 
 public class Album implements Parcelable {
     String name;
-    List<Photo> photos;
-    public Album(String name, List<Photo> photos){
+    ArrayList<Photo> photos;
+    public Album(String name, ArrayList<Photo> photos){
         this.name = name;
         this.photos = photos;
     }
@@ -44,7 +44,12 @@ public class Album implements Parcelable {
     };
 
     public String toString(){
-        return name;
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+        sb.append("\n");
+        if(photos != null)
+            sb.append(photos.toString());
+        return sb.toString();
     }
 
 

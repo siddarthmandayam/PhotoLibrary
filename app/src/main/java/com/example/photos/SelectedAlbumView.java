@@ -1,23 +1,31 @@
 package com.example.photos;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SelectedAlbumView extends AppCompatActivity {
 
     ArrayList<Album> allAlbums;
     int position;
+    ImageAdapter adapter;
+    GridView thumbnailGrid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,17 +36,72 @@ public class SelectedAlbumView extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         allAlbums = getIntent().getExtras().getParcelableArrayList("allAlbums");
         position = getIntent().getExtras().getInt("position");
+        thumbnailGrid = findViewById(R.id.grid_view);
+
+        //allAlbums.get(position).photos.add(new Photo())
+
+
 
         System.out.println(allAlbums.get(position));
+        adapter = new ImageAdapter(allAlbums.get(position).photos, this);
+        //allAlbums.get(position).photos.add(new Photo("content://com.android.externalstorage.documents/document/primary%3ADownload%2FStockPhoto1.jpeg", null));
+        thumbnailGrid.setAdapter(adapter);
+        thumbnailGrid.setOnItemClickListener((parent, view, position1, id) -> transitionToSelectedPhoto(position1));
+
+
+    }
+
+    private void transitionToSelectedPhoto(int photoPosition){
+        Intent intent = new Intent(this, SelectedPhoto.class);
+        intent.putParcelableArrayListExtra("allAlbums", allAlbums);
+        intent.putExtra("currentAlbum", allAlbums.get(position));
+        intent.putExtra("chosenPhoto", allAlbums.get(position).photos.get(photoPosition));
+        startActivity(intent);
+
+
+    }
+
+    public static final int PICK_IMAGE = 1;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE) {
 
 
 
+            Uri selectedImage = data.getData();
+            System.out.println(selectedImage);
 
-        GridView albumThumbnails = findViewById(R.id.grid_view);
+            int flags = data.getFlags();
+            ContentResolver resolver = this.getContentResolver();
+            resolver.takePersistableUriPermission(selectedImage, flags);
+
+            /*
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            //Cursor cursor = getContentResolver().query(selectedImage, new String[] { android.provider.MediaStore.Images.ImageColumns.DATA }, null, null, null);
+            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            System.out.println(cursor);
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+             */
+
+            System.out.println(selectedImage);
+            allAlbums.get(position).photos.add(new Photo(selectedImage.toString(), new HashMap<String,String>()));
+            adapter.notifyDataSetChanged();
+            thumbnailGrid.invalidate();
 
 
+        }
+        else{
+
+        }
     }
 
     @Override
@@ -60,6 +123,21 @@ public class SelectedAlbumView extends AppCompatActivity {
     }
 
     private void promptUserAddNewPhoto(){
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        //Intent intent = new Intent();
+        //intent.setType("image/*");
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
+
+        //Intent intent = new Intent(Intent.ACTION_PICK,
+                //MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+
+        //Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        //intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
 
 
     }

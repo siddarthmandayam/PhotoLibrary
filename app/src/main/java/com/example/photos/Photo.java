@@ -41,4 +41,12 @@ public class Photo implements Parcelable {
             return new Photo[size];
         }
     };
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(photoPath);
+        sb.append("/n");
+        sb.append(tags);
+        return sb.toString();
+    }
 }
