@@ -2,10 +2,12 @@ package com.example.photos.activities;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.photos.R;
 import com.example.photos.model.Album;
+import com.example.photos.model.Photo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,8 +28,10 @@ import java.util.List;
 public class SelectedPhoto extends AppCompatActivity {
 
     ArrayList<Album> allAlbums;
-    int albumPosition;
-    int photoPosition;
+    Album currentAlbum;
+    Photo currentPhoto;
+    //int albumPosition;
+    //int photoPosition;
 
 
 
@@ -43,25 +47,31 @@ public class SelectedPhoto extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         allAlbums = getIntent().getExtras().getParcelableArrayList("allAlbums");
-        albumPosition = getIntent().getExtras().getInt( "albumPosition");
-        photoPosition = getIntent().getExtras().getInt("position");
+        currentAlbum = getIntent().getParcelableExtra("currentAlbum");
+        currentPhoto = getIntent().getParcelableExtra("chosenPhoto");
+        //albumPosition = getIntent().getExtras().getInt( "albumPosition");
+        //photoPosition = getIntent().getExtras().getInt("position");
 
         // display selected image
 
         ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
+        image.setImageURI(Uri.parse(currentPhoto.photoPath));
 
+        /*
         int imageResource = getResources().getIdentifier(
-                allAlbums.get(albumPosition).photos.get(photoPosition).photoPath,
+                currentPhoto.photoPath,
                 null, this.getPackageName());
 
         image.setImageResource(imageResource);
 
+         */
+
         TextView selectedPhotoTags = (TextView) findViewById(R.id.selectedPhotoTags);
         StringBuilder sbTags = new StringBuilder();
-        for(String key: allAlbums.get(albumPosition).photos.get(photoPosition).tags.keySet()) {
+        for(String key: currentPhoto.tags.keySet()) {
             sbTags.append(key);
             sbTags.append("=");
-            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(key));
+            sbTags.append(currentPhoto.tags.get(key));
             sbTags.append("\n");
         }
         if (sbTags.length() > 0) {
@@ -113,7 +123,7 @@ public class SelectedPhoto extends AppCompatActivity {
 
         // error message here for if tag entered is not present
 
-        String existingValue = allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(key);
+        String existingValue = currentPhoto.tags.get(key);
         String[] existingValueDelimited = existingValue.split(",");
         StringBuilder newValue = new StringBuilder();
 
@@ -125,18 +135,18 @@ public class SelectedPhoto extends AppCompatActivity {
 
         if (newValue.length() != 0) {
             newValue.setLength(newValue.length() - 1);
-            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put(key, newValue.toString());
+            currentPhoto.tags.put(key, newValue.toString());
         }
         else {
-            allAlbums.get(albumPosition).photos.get(photoPosition).tags.remove(key);
+            currentPhoto.tags.remove(key);
         }
 
         TextView selectedPhotoTags = (TextView) findViewById(R.id.selectedPhotoTags);
         StringBuilder sbTags = new StringBuilder();
-        for(String k: allAlbums.get(albumPosition).photos.get(photoPosition).tags.keySet()) {
+        for(String k: currentPhoto.tags.keySet()) {
             sbTags.append(k);
             sbTags.append("=");
-            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(k));
+            sbTags.append(currentPhoto.tags.get(k));
             sbTags.append("\n");
         }
         if (sbTags.length() > 0) {
@@ -161,24 +171,24 @@ public class SelectedPhoto extends AppCompatActivity {
         String addedKey = tagDelim[0];
         String addedValue = tagDelim[1];
 
-        if (!allAlbums.get(albumPosition).photos.get(photoPosition).tags.containsKey(addedKey)) {
-            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put(addedKey, addedValue);
+        if (!currentPhoto.tags.containsKey(addedKey)) {
+            currentPhoto.tags.put(addedKey, addedValue);
         }
         else {
             String[] existingValueDelimited =
-                    allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(addedKey).split(",");
+                    currentPhoto.tags.get(addedKey).split(",");
             StringBuilder existingValueWithAddedValue =
-                    new StringBuilder(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(addedKey));
+                    new StringBuilder(currentPhoto.tags.get(addedKey));
             existingValueWithAddedValue.append("," + addedValue);
-            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put(addedKey, existingValueWithAddedValue.toString());
+            currentPhoto.tags.put(addedKey, existingValueWithAddedValue.toString());
         }
 
         TextView selectedPhotoTags = (TextView) findViewById(R.id.selectedPhotoTags);
         StringBuilder sbTags = new StringBuilder();
-        for(String key: allAlbums.get(albumPosition).photos.get(photoPosition).tags.keySet()) {
+        for(String key: currentPhoto.tags.keySet()) {
             sbTags.append(key);
             sbTags.append("=");
-            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(key));
+            sbTags.append(currentPhoto.tags.get(key));
             sbTags.append("\n");
         }
         if (sbTags.length() > 0) {
@@ -202,25 +212,34 @@ public class SelectedPhoto extends AppCompatActivity {
 
     private void deletePhoto() {
         int oldPosition = 0;
+        int newPosition = 0;
         // if not the first photo then we display the previous photo before we delete it
-        if (photoPosition > 0) {
-            oldPosition = photoPosition;
-            photoPosition--;
+        if (currentAlbum.photos.indexOf(currentPhoto) > 0) {
+            oldPosition = currentAlbum.photos.indexOf(currentPhoto);
+            newPosition = currentAlbum.photos.indexOf(currentPhoto) - 1;
+            Photo newPhoto = currentAlbum.photos.get(newPosition);
+            currentPhoto = newPhoto;
 
             ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
 
+            image.setImageURI(Uri.parse(currentPhoto.photoPath));
+
+            /*
+
             int imageResource = getResources().getIdentifier(
-                    allAlbums.get(albumPosition).photos.get(photoPosition).photoPath,
+                    newPhoto.photoPath,
                     null, this.getPackageName());
 
             image.setImageResource(imageResource);
 
+             */
+
             TextView selectedPhotoTags = (TextView) findViewById(R.id.selectedPhotoTags);
             StringBuilder sbTags = new StringBuilder();
-            for(String key: allAlbums.get(albumPosition).photos.get(photoPosition).tags.keySet()) {
+            for(String key: newPhoto.tags.keySet()) {
                 sbTags.append(key);
                 sbTags.append("=");
-                sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(key));
+                sbTags.append(newPhoto.tags.get(key));
                 sbTags.append("\n");
             }
             if (sbTags.length() > 0) {
@@ -229,7 +248,7 @@ public class SelectedPhoto extends AppCompatActivity {
             selectedPhotoTags.setText(sbTags.toString());
 
             // now we delete the photo and update photo position
-            allAlbums.get(albumPosition).photos.remove(oldPosition);
+            currentAlbum.photos.remove(oldPosition);
             saveData();
 
         }
@@ -237,22 +256,29 @@ public class SelectedPhoto extends AppCompatActivity {
         // if we are removing the first photo, then we display the photo that is next
         else {
             oldPosition = 0;
-            photoPosition++;
+            newPosition = currentAlbum.photos.indexOf(currentPhoto) + 1;
+            Photo newPhoto = currentAlbum.photos.get(newPosition);
+            currentPhoto = newPhoto;
 
             ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
+            image.setImageURI(Uri.parse(currentPhoto.photoPath));
+
+            /*
 
             int imageResource = getResources().getIdentifier(
-                    allAlbums.get(albumPosition).photos.get(photoPosition).photoPath,
+                    newPhoto.photoPath,
                     null, this.getPackageName());
 
             image.setImageResource(imageResource);
 
+             */
+
             TextView selectedPhotoTags = (TextView) findViewById(R.id.selectedPhotoTags);
             StringBuilder sbTags = new StringBuilder();
-            for(String key: allAlbums.get(albumPosition).photos.get(photoPosition).tags.keySet()) {
+            for(String key: newPhoto.tags.keySet()) {
                 sbTags.append(key);
                 sbTags.append("=");
-                sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(key));
+                sbTags.append(newPhoto.tags.get(key));
                 sbTags.append("\n");
             }
             if (sbTags.length() > 0) {
@@ -261,64 +287,78 @@ public class SelectedPhoto extends AppCompatActivity {
             selectedPhotoTags.setText(sbTags.toString());
 
             // now we delete the photo
-            allAlbums.get(albumPosition).photos.remove(oldPosition);
-            photoPosition = 0;
+            currentAlbum.photos.remove(oldPosition);
+            newPosition = 0;
             saveData();
         }
 
     }
 
     public void nextPhoto(View view) {
-        if (photoPosition < allAlbums.get(albumPosition).photos.size() - 1) {
+        int photoPosition = currentAlbum.photos.indexOf(currentPhoto);
+        if (photoPosition < currentAlbum.photos.size() - 1) {
             photoPosition++;
 
             ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
+            image.setImageURI(Uri.parse(currentPhoto.photoPath));
+
+            /*
 
             int imageResource = getResources().getIdentifier(
-                    allAlbums.get(albumPosition).photos.get(photoPosition).photoPath,
+                    currentAlbum.photos.get(photoPosition).photoPath,
                     null, this.getPackageName());
 
             image.setImageResource(imageResource);
 
+             */
+
             TextView selectedPhotoTags = (TextView) findViewById(R.id.selectedPhotoTags);
             StringBuilder sbTags = new StringBuilder();
-            for(String key: allAlbums.get(albumPosition).photos.get(photoPosition).tags.keySet()) {
+            for(String key: currentAlbum.photos.get(photoPosition).tags.keySet()) {
                 sbTags.append(key);
                 sbTags.append("=");
-                sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(key));
+                sbTags.append(currentAlbum.photos.get(photoPosition).tags.get(key));
                 sbTags.append("\n");
             }
             if (sbTags.length() > 0) {
                 sbTags.setLength(sbTags.length() - 1);
             }
             selectedPhotoTags.setText(sbTags.toString());
+            currentPhoto = currentAlbum.photos.get(photoPosition);
         }
     }
 
     public void previousPhoto(View view) {
+        int photoPosition = currentAlbum.photos.indexOf(currentPhoto);
         if (photoPosition > 0) {
             photoPosition--;
 
             ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
+            image.setImageURI(Uri.parse(currentPhoto.photoPath));
+
+            /*
 
             int imageResource = getResources().getIdentifier(
-                    allAlbums.get(albumPosition).photos.get(photoPosition).photoPath,
+                    currentAlbum.photos.get(photoPosition).photoPath,
                     null, this.getPackageName());
 
             image.setImageResource(imageResource);
 
+             */
+
             TextView selectedPhotoTags = (TextView) findViewById(R.id.selectedPhotoTags);
             StringBuilder sbTags = new StringBuilder();
-            for(String key: allAlbums.get(albumPosition).photos.get(photoPosition).tags.keySet()) {
+            for(String key: currentAlbum.photos.get(photoPosition).tags.keySet()) {
                 sbTags.append(key);
                 sbTags.append("=");
-                sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(key));
+                sbTags.append(currentAlbum.photos.get(photoPosition).tags.get(key));
                 sbTags.append("\n");
             }
             if (sbTags.length() > 0) {
                 sbTags.setLength(sbTags.length() - 1);
             }
             selectedPhotoTags.setText(sbTags.toString());
+            currentPhoto = currentAlbum.photos.get(photoPosition);
 
         }
     }
