@@ -14,7 +14,7 @@
         app:srcCompat="@android:drawable/screen_background_light" />
 
     <TextView
-        android:id="@+id/selectedPhotoTags"
+        android:id="@+id/personTags"
         android:layout_width="123dp"
         android:layout_height="65dp"
         android:layout_below="@+id/selectedPhoto"

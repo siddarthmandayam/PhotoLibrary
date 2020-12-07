@@ -15,6 +15,7 @@
         <activity
             android:name=".activities.SelectedPhoto"
             android:label="@string/title_activity_selected_photo"
+            android:parentActivityName=".activities.SelectedAlbum"
             android:theme="@style/Theme.Photos.NoActionBar"></activity>
         <activity
             android:name=".activities.SelectedAlbum"

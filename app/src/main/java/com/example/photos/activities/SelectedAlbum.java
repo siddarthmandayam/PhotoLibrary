@@ -53,6 +53,7 @@ public class SelectedAlbum extends AppCompatActivity {
         adapter = new ImageAdapter(allAlbums.get(position).photos, this);
         //allAlbums.get(position).photos.add(new Photo("content://com.android.externalstorage.documents/document/primary%3ADownload%2FStockPhoto1.jpeg", null));
         thumbnailGrid.setAdapter(adapter);
+        thumbnailGrid.setAdapter(adapter);
         thumbnailGrid.setOnItemClickListener((parent, view, position1, id) -> transitionToSelectedPhoto(position1));
 
 
@@ -63,6 +64,7 @@ public class SelectedAlbum extends AppCompatActivity {
         intent.putParcelableArrayListExtra("allAlbums", allAlbums);
         intent.putExtra("currentAlbum", allAlbums.get(position));
         intent.putExtra("chosenPhoto", allAlbums.get(position).photos.get(photoPosition));
+        intent.putExtra("photoPosition", photoPosition);
         startActivity(intent);
 
 
