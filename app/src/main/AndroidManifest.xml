@@ -12,9 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Photos">
         <activity
+            android:name=".activities.SelectedSearchResult"
+            android:label="@string/title_activity_selected_search_result"
+            android:theme="@style/Theme.Photos.NoActionBar"></activity>
+        <activity
             android:name=".activities.SearchResults"
             android:label="@string/title_activity_search_results"
-            android:theme="@style/Theme.Photos.NoActionBar"></activity>
+            android:theme="@style/Theme.Photos.NoActionBar" />
         <activity
             android:name=".activities.SelectedPhoto"
             android:label="@string/title_activity_selected_photo"

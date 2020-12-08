@@ -1,5 +1,6 @@
 package com.example.photos.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.photos.model.ImageAdapter;
@@ -34,6 +35,19 @@ public class SearchResults extends AppCompatActivity {
         resultsGrid = findViewById(R.id.grid_results);
 
         searchResults = getIntent().getExtras().getParcelableArrayList("searchResults");
+
+        adapter = new ImageAdapter(searchResults, this);
+        //allAlbums.get(position).photos.add(new Photo("content://com.android.externalstorage.documents/document/primary%3ADownload%2FStockPhoto1.jpeg", null));
+        resultsGrid.setAdapter(adapter);
+        resultsGrid.setOnItemClickListener((parent, view, position1, id) -> transitionToSelectedPhoto(position1));
+
+    }
+
+    private void transitionToSelectedPhoto(int photoPosition){
+        Intent intent = new Intent(this, SelectedSearchResult.class);
+        intent.putParcelableArrayListExtra("allPhotos", searchResults);
+        startActivity(intent);
+
 
     }
 }
