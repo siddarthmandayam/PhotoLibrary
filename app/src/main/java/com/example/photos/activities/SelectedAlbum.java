@@ -61,8 +61,7 @@ public class SelectedAlbum extends AppCompatActivity {
     private void transitionToSelectedPhoto(int photoPosition){
         Intent intent = new Intent(this, SelectedPhoto.class);
         intent.putParcelableArrayListExtra("allAlbums", allAlbums);
-        intent.putExtra("currentAlbum", allAlbums.get(position));
-        intent.putExtra("chosenPhoto", allAlbums.get(position).photos.get(photoPosition));
+        intent.putExtra("albumPosition", position);
         intent.putExtra("photoPosition", photoPosition);
         startActivity(intent);
 
