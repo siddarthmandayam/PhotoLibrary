@@ -28,8 +28,6 @@ import java.util.List;
 public class SelectedPhoto extends AppCompatActivity {
 
     ArrayList<Album> allAlbums;
-    //Album currentAlbum;
-    //Photo currentPhoto;
     int albumPosition;
     int photoPosition;
 
@@ -47,8 +45,6 @@ public class SelectedPhoto extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         allAlbums = getIntent().getExtras().getParcelableArrayList("allAlbums");
-        //currentAlbum = getIntent().getParcelableExtra("currentAlbum");
-        //currentPhoto = getIntent().getParcelableExtra("chosenPhoto");
         albumPosition = getIntent().getExtras().getInt("albumPosition");
         photoPosition = getIntent().getExtras().getInt("photoPosition");
 
@@ -121,6 +117,9 @@ public class SelectedPhoto extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
+            case R.id.move_photo_action:
+                promptUserMovePhoto();
+                return true;
             case R.id.delete_tag_action:
                 promptUserDeleteTag();
                 return true;
@@ -135,8 +134,107 @@ public class SelectedPhoto extends AppCompatActivity {
         }
     }
 
-    public boolean isValidTag(String tag) {
-        return tag.matches("(.*)=(.*)");
+    private void promptUserMovePhoto() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        EditText input = new EditText(this);
+        input.setHint("Enter album name here");
+
+        builder.setView(input);
+        builder.setPositiveButton("Move Photo to Album", ((dialog, which) -> movePhotoToAlbum(input.getText().toString())));
+        builder.setNegativeButton("Cancel", (((dialog, which) -> dialog.cancel())));
+        builder.show();
+
+    }
+
+    private void movePhotoToAlbum(String albumName) {
+        int oldPosition = 0;
+        // if not the first photo then we display the previous photo before we delete it
+        if (photoPosition > 0) {
+            oldPosition = photoPosition;
+            photoPosition--;
+
+            ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
+
+            image.setImageURI(Uri.parse(allAlbums.get(albumPosition).photos.get(photoPosition).photoPath));
+
+
+            TextView personTags = (TextView) findViewById(R.id.personTags);
+            StringBuilder sbTags = new StringBuilder();
+            sbTags.append("person: ");
+            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
+
+            personTags.setText(sbTags.toString());
+
+            TextView locationTags = (TextView) findViewById(R.id.locationTags);
+            StringBuilder sb1Tags = new StringBuilder();
+            sb1Tags.append("location: ");
+            sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
+
+            locationTags.setText(sb1Tags.toString());
+
+            // now we move the photo and update photo position
+
+            for (Album album : allAlbums) {
+                if (album.name.equals(albumName)) {
+                    // add photo to new album
+                    Photo photoToRemove = allAlbums.get(albumPosition).photos.get(oldPosition);
+                    album.photos.add(photoToRemove);
+                    // remove photo from current album
+                    allAlbums.get(albumPosition).photos.remove(oldPosition);
+                    saveData();
+                    return;
+                }
+            }
+            /*
+            allAlbums.get(albumPosition).photos.remove(oldPosition);
+            saveData();
+
+             */
+
+        }
+
+        // if we are removing the first photo, then we display the photo that is next
+        else {
+            oldPosition = 0;
+            photoPosition++;
+            //currentPhoto = currentAlbum.photos.get(photoPosition);
+
+            ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
+            image.setImageURI(Uri.parse(allAlbums.get(albumPosition).photos.get(photoPosition).photoPath));
+
+            TextView personTags = (TextView) findViewById(R.id.personTags);
+            StringBuilder sbTags = new StringBuilder();
+            sbTags.append("person: ");
+            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
+
+            personTags.setText(sbTags.toString());
+
+            TextView locationTags = (TextView) findViewById(R.id.locationTags);
+            StringBuilder sb1Tags = new StringBuilder();
+            sb1Tags.append("location: ");
+            sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
+
+            locationTags.setText(sb1Tags.toString());
+
+            // now we move the photo and update photo position
+
+            for (Album album : allAlbums) {
+                if (album.name.equals(albumName)) {
+                    // add photo to new album
+                    Photo photoToRemove = allAlbums.get(albumPosition).photos.get(oldPosition);
+                    album.photos.add(photoToRemove);
+                    // remove photo from current album
+                    allAlbums.get(albumPosition).photos.remove(oldPosition);
+                    saveData();
+                    return;
+                }
+            }
+            /*
+            allAlbums.get(albumPosition).photos.remove(oldPosition);
+            saveData();
+
+             */
+        }
     }
 
     private void promptUserDeleteTag() { // have to add in error messages still
@@ -147,6 +245,7 @@ public class SelectedPhoto extends AppCompatActivity {
         builder.setView(input);
         builder.setPositiveButton("Remove Person Tag", ((dialog, which) -> deletePersonTag(input.getText().toString())));
         builder.setNegativeButton("Remove Location Tag", ((dialog, which) -> deleteLocationTag(input.getText().toString())));
+        builder.setNeutralButton("Cancel", (((dialog, which) -> dialog.cancel())));
         builder.show();
 
         /*
@@ -261,6 +360,7 @@ public class SelectedPhoto extends AppCompatActivity {
         builder.setView(input);
         builder.setPositiveButton("Add Person Tag", ((dialog, which) -> addPersonTag(input.getText().toString())));
         builder.setNegativeButton("Add Location Tag", ((dialog, which) -> addLocationTag(input.getText().toString())));
+        builder.setNeutralButton("Cancel", (((dialog, which) -> dialog.cancel())));
         builder.show();
         /*
         String tag = input.getText().toString();

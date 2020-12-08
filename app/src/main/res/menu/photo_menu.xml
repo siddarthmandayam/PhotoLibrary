@@ -5,15 +5,24 @@
         android:icon="@drawable/add_icon"
         android:title="@string/add"
         appcompat:showAsAction="always" />
-    <item android:id="@+id/delete_tag_action"
+    <item
+        android:id="@+id/delete_tag_action"
         android:icon="@drawable/ic_baseline_remove_24"
+        android:iconTint="#FFFFFF"
         android:title="delete_tag"
-        appcompat:showAsAction="always"
-        />
-    <item android:id="@+id/delete_photo_action"
+        appcompat:showAsAction="always" />
+    <item
+        android:id="@+id/move_photo_action"
+        android:icon="@drawable/ic_baseline_arrow_forward_24"
+        android:iconTint="#FFFFFF"
+        android:title="move_photo"
+        appcompat:showAsAction="always" />
+    <item
+        android:id="@+id/delete_photo_action"
         android:icon="@drawable/ic_baseline_delete_24"
+        android:iconTint="#FFFFFF"
         android:title="@string/delete"
-        appcompat:showAsAction="always"/>
+        appcompat:showAsAction="always" />
 
 
 </menu>
