@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.photos.R;
 import com.example.photos.model.Album;
@@ -20,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Photos extends AppCompatActivity {
@@ -84,42 +86,142 @@ public class Photos extends AppCompatActivity {
     private void promptUserSearchQuery(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         EditText input = new EditText(this);
+        builder.setMessage("Examples of valid queries: \n location=sweden \n location=sweden AND person=joe \n location=sweden OR location=hungary");
         input.setHint("Enter query here ");
         builder.setView(input);
-        builder.setPositiveButton("Search by Location", ((dialog, which) -> transitionToSearchResults(0, input.getText().toString())));
-        builder.setNegativeButton("Search by Person", ((dialog, which) -> transitionToSearchResults(1, input.getText().toString())));
-        builder.setNeutralButton("Cancel", ((dialog, which) -> dialog.cancel()));
+        builder.setPositiveButton("Search", (dialog, which) -> {
+            String searchQuery = input.getText().toString();
+            if(searchQuery.equals("")){
+                System.out.println("query is empty");
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setMessage("Query is empty");
+                alert.setNeutralButton("OK", null);
+                alert.show();
+
+            }
+            String[] tagFilterDelim = searchQuery.split(" ");
+            if(!isValidTag(tagFilterDelim)){
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setMessage("Query format is incorrect");
+                alert.setNeutralButton("OK", null);
+                alert.show();
+            }
+            else {
+                ArrayList<Photo> searchResults = new ArrayList<Photo>();
+                HashSet<Photo> seen = new HashSet<Photo>();
+
+                for(Album album : userAlbums){
+                    for(Photo photo: album.photos){
+                        if(seen.contains(photo))
+                            continue;
+                        seen.add(photo);
+                        if(tagFilterDelim.length == 1){
+                            String[] tagValue = tagFilterDelim[0].split("=");
+                            if(photo.tags.containsKey(tagValue[0]) && containsValue(photo.tags.get(tagValue[0]),tagValue[1])){
+                                searchResults.add(photo);
+                            }
+                        }
+                        else{
+                            String firstKeyValue = tagFilterDelim[0];
+                            String secondKeyValue = tagFilterDelim[2];
+
+                            String[] firstDelimited = firstKeyValue.split("=");
+                            String[] secondDelimited = secondKeyValue.split("=");
+
+                            String firstKey = firstDelimited[0];
+                            String firstValue = firstDelimited[1];
+                            String secondKey = secondDelimited[0];
+                            String secondValue = secondDelimited[1];
+
+                            if(tagFilterDelim[1].equals("OR")) {
+                                if((photo.tags.containsKey(firstKey) && containsValue(photo.tags.get(firstKey), firstValue) || (photo.tags.containsKey(secondKey) && containsValue(photo.tags.get(secondKey),secondValue)))) {
+                                    searchResults.add(photo);
+                                }
+                            }
+                            else {
+                                if((photo.tags.containsKey(firstKey) && containsValue(photo.tags.get(firstKey), firstValue) && (photo.tags.containsKey(secondKey) && containsValue(photo.tags.get(secondKey),secondValue)))) {
+                                    searchResults.add(photo);
+                                }
+
+                            }
+
+                        }
+
+                    }
+                }
+
+                Intent intent = new Intent(this, SearchResults.class);
+                intent.putParcelableArrayListExtra("searchResults", searchResults);
+                startActivity(intent);
+
+            }
+
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
         builder.show();
 
     }
+    private boolean containsValue(String values, String targetValue){
+        String[] delimitedValues = values.split(",");
+        for(String currentValue: delimitedValues) {
+            if(currentValue.equals(targetValue) || currentValue.startsWith(targetValue)) return true;
+        }
+        return false;
 
-    private void transitionToSearchResults(int mode, String searchQuery){
-        String key = "";
-        if(mode == 0){
-            key = "location";
+    }
+
+    /*
+    private void transitionToSearchResults(String searchQuery){
+        System.out.println("checkign query");
+        if(searchQuery.equals("")){
+            System.out.println("query is empty");
+            Toast.makeText(Photos.this, "Query cannot be empty",
+                    Toast.LENGTH_LONG).show();
+
         }
-        else{
-            key = "person";
+        String[] tagFilterDelim = searchQuery.split(" ");
+        if(!isValidTag(tagFilterDelim)){
+            Toast.makeText(this, "Query format is incorrect",
+                    Toast.LENGTH_LONG).show();
         }
-        ArrayList<Photo> searchResults = new ArrayList<Photo>();
-        for(Album album : userAlbums){
-            for(Photo photo: album.photos){
-                //get the appropriate tag values
-                String values = photo.tags.get(key);
+        else {
+
+            ArrayList<Photo> searchResults = new ArrayList<Photo>();
+
+            //add manually for now
+            searchResults.add(userAlbums.get(0).photos.get(0));
+            searchResults.add(userAlbums.get(0).photos.get(1));
+
+            Intent intent = new Intent(this, SearchResults.class);
+            intent.putParcelableArrayListExtra("searchResults", searchResults);
+            startActivity(intent);
+
+        }
+
+    }
+
+     */
+    private boolean isValidTag(String[] tagDelim){
+        if(tagDelim.length != 1 && tagDelim.length != 3){
+
+            return false;
+        }
+        if(tagDelim.length == 1){
+            if(!tagDelim[0].matches("((location|person).*)=(.*)")){
+
+                return false;
 
             }
         }
-        //add manually for now
-        searchResults.add(userAlbums.get(0).photos.get(0));
+        if(tagDelim.length == 3){
+            if(!(tagDelim[0].matches("((location|person).*)=(.*)") && tagDelim[2].matches("((location|person).*)=(.*)") && tagDelim[1].matches("OR|AND"))){
+                if(!tagDelim[0].matches("((location|person).*)=(.*)")){
+                    return false;
+                }
 
-        Intent intent = new Intent(this, SearchResults.class);
-        intent.putParcelableArrayListExtra("searchResults", searchResults);
-        startActivity(intent);
-
-
-
-
-
+            }
+        }
+        return true;
 
     }
 

@@ -31,6 +31,9 @@ public class SearchResults extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         resultsGrid = findViewById(R.id.grid_results);
 

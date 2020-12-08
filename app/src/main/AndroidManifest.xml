@@ -18,7 +18,8 @@
         <activity
             android:name=".activities.SearchResults"
             android:label="@string/title_activity_search_results"
-            android:theme="@style/Theme.Photos.NoActionBar" />
+            android:theme="@style/Theme.Photos.NoActionBar"
+            android:parentActivityName=".activities.Photos"/>
         <activity
             android:name=".activities.SelectedPhoto"
             android:label="@string/title_activity_selected_photo"
