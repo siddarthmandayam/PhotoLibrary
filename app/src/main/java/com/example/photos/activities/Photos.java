@@ -94,6 +94,32 @@ public class Photos extends AppCompatActivity {
     }
 
     private void transitionToSearchResults(int mode, String searchQuery){
+        String key = "";
+        if(mode == 0){
+            key = "location";
+        }
+        else{
+            key = "person";
+        }
+        ArrayList<Photo> searchResults = new ArrayList<Photo>();
+        for(Album album : userAlbums){
+            for(Photo photo: album.photos){
+                //get the appropriate tag values
+                String values = photo.tags.get(key);
+
+            }
+        }
+        //add manually for now
+        searchResults.add(userAlbums.get(0).photos.get(0));
+
+        Intent intent = new Intent(this, SearchResults.class);
+        intent.putParcelableArrayListExtra("searchResults", searchResults);
+        startActivity(intent);
+
+
+
+
+
 
     }
 

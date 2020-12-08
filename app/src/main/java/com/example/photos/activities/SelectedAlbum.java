@@ -53,7 +53,6 @@ public class SelectedAlbum extends AppCompatActivity {
         adapter = new ImageAdapter(allAlbums.get(position).photos, this);
         //allAlbums.get(position).photos.add(new Photo("content://com.android.externalstorage.documents/document/primary%3ADownload%2FStockPhoto1.jpeg", null));
         thumbnailGrid.setAdapter(adapter);
-        thumbnailGrid.setAdapter(adapter);
         thumbnailGrid.setOnItemClickListener((parent, view, position1, id) -> transitionToSelectedPhoto(position1));
 
 
