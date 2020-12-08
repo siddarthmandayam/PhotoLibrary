@@ -28,9 +28,10 @@ import java.util.List;
 public class SelectedPhoto extends AppCompatActivity {
 
     ArrayList<Album> allAlbums;
-    Album currentAlbum;
-    Photo currentPhoto;
-    int currentIndex;
+    //Album currentAlbum;
+    //Photo currentPhoto;
+    int albumPosition;
+    int photoPosition;
 
 
 
@@ -46,14 +47,15 @@ public class SelectedPhoto extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         allAlbums = getIntent().getExtras().getParcelableArrayList("allAlbums");
-        currentAlbum = getIntent().getParcelableExtra("currentAlbum");
-        currentPhoto = getIntent().getParcelableExtra("chosenPhoto");
-        currentIndex = getIntent().getExtras().getInt("photoPosition");
+        //currentAlbum = getIntent().getParcelableExtra("currentAlbum");
+        //currentPhoto = getIntent().getParcelableExtra("chosenPhoto");
+        albumPosition = getIntent().getExtras().getInt("albumPosition");
+        photoPosition = getIntent().getExtras().getInt("photoPosition");
 
         // display selected image
 
         ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
-        image.setImageURI(Uri.parse(currentAlbum.photos.get(currentIndex).photoPath));
+        image.setImageURI(Uri.parse(allAlbums.get(albumPosition).photos.get(photoPosition).photoPath));
 
         /*
         int imageResource = getResources().getIdentifier(
@@ -84,7 +86,7 @@ public class SelectedPhoto extends AppCompatActivity {
         TextView personTags = (TextView) findViewById(R.id.personTags);
         StringBuilder sbTags = new StringBuilder();
         sbTags.append("person: ");
-        sbTags.append(currentAlbum.photos.get(currentIndex).tags.get("person"));
+        sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
 
         /*
         if (sbTags.length() > 0) {
@@ -97,7 +99,7 @@ public class SelectedPhoto extends AppCompatActivity {
         TextView locationTags = (TextView) findViewById(R.id.locationTags);
         StringBuilder sb1Tags = new StringBuilder();
         sb1Tags.append("location: ");
-        sb1Tags.append(currentAlbum.photos.get(currentIndex).tags.get("location"));
+        sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
 
         /*
         if (sb1Tags.length() > 0) {
@@ -107,7 +109,7 @@ public class SelectedPhoto extends AppCompatActivity {
          */
         locationTags.setText(sb1Tags.toString());
         System.out.println("these are the tags");
-        System.out.println(currentAlbum.photos.get(currentIndex).tags);
+        System.out.println(allAlbums.get(albumPosition).photos.get(photoPosition).tags);
 
     }
 
@@ -143,7 +145,11 @@ public class SelectedPhoto extends AppCompatActivity {
         input.setHint("Enter tag here ");
 
         builder.setView(input);
-        String tag = input.getText().toString();
+        builder.setPositiveButton("Remove Person Tag", ((dialog, which) -> deletePersonTag(input.getText().toString())));
+        builder.setNegativeButton("Remove Location Tag", ((dialog, which) -> deleteLocationTag(input.getText().toString())));
+        builder.show();
+
+        /*
 
         // error message here for if tag is not entered in correct format
 
@@ -153,7 +159,7 @@ public class SelectedPhoto extends AppCompatActivity {
 
         // error message here for if tag entered is not present
 
-        String existingValue = currentAlbum.photos.get(currentIndex).tags.get(key);
+        String existingValue = allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(key);
         String[] existingValueDelimited = existingValue.split(",");
         StringBuilder newValue = new StringBuilder();
 
@@ -165,24 +171,84 @@ public class SelectedPhoto extends AppCompatActivity {
 
         if (newValue.length() != 0) {
             newValue.setLength(newValue.length() - 1);
-            currentAlbum.photos.get(currentIndex).tags.put(key, newValue.toString());
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put(key, newValue.toString());
         }
         else {
-            currentAlbum.photos.get(currentIndex).tags.remove(key);
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.remove(key);
         }
 
         TextView selectedPhotoTags = (TextView) findViewById(R.id.personTags);
         StringBuilder sbTags = new StringBuilder();
-        for(String k: currentAlbum.photos.get(currentIndex).tags.keySet()) {
+        for(String k: allAlbums.get(albumPosition).photos.get(photoPosition).tags.keySet()) {
             sbTags.append(k);
             sbTags.append("=");
-            sbTags.append(currentAlbum.photos.get(currentIndex).tags.get(k));
+            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get(k));
             sbTags.append("\n");
         }
         if (sbTags.length() > 0) {
             sbTags.setLength(sbTags.length() - 1);
         }
         selectedPhotoTags.setText(sbTags.toString());
+
+        saveData();
+
+         */
+    }
+
+    private void deleteLocationTag(String tag) {
+        String existingValue = allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location");
+        String[] existingValueDelimited = existingValue.split(",");
+        StringBuilder newValue = new StringBuilder();
+
+        for (String s : existingValueDelimited) {
+            if (!s.equals(tag)) {
+                newValue.append(s + ",");
+            }
+        }
+
+        if (newValue.length() != 0) {
+            newValue.setLength(newValue.length() - 1);
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put("location", newValue.toString());
+        }
+        else {
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.remove("location");
+        }
+
+        TextView locationTags = (TextView) findViewById(R.id.locationTags);
+        StringBuilder sb1Tags = new StringBuilder();
+        sb1Tags.append("location: ");
+        sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
+
+        locationTags.setText(sb1Tags.toString());
+
+        saveData();
+    }
+
+    private void deletePersonTag(String tag) {
+        String existingValue = allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person");
+        String[] existingValueDelimited = existingValue.split(",");
+        StringBuilder newValue = new StringBuilder();
+
+        for (String s : existingValueDelimited) {
+            if (!s.equals(tag)) {
+                newValue.append(s + ",");
+            }
+        }
+
+        if (newValue.length() != 0) {
+            newValue.setLength(newValue.length() - 1);
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put("person", newValue.toString());
+        }
+        else {
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.remove("person");
+        }
+
+        TextView personTags = (TextView) findViewById(R.id.personTags);
+        StringBuilder sb1Tags = new StringBuilder();
+        sb1Tags.append("person: ");
+        sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
+
+        personTags.setText(sb1Tags.toString());
 
         saveData();
     }
@@ -237,21 +303,21 @@ public class SelectedPhoto extends AppCompatActivity {
 
     private void addLocationTag(String tag) {
         System.out.println("the tag is " + tag);
-        if (!currentAlbum.photos.get(currentIndex).tags.containsKey("location")) {
-            currentAlbum.photos.get(currentIndex).tags.put("location", tag);
+        if (!allAlbums.get(albumPosition).photos.get(photoPosition).tags.containsKey("location")) {
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put("location", tag);
         }
         else {
             String[] existingValueDelimited =
-                    currentAlbum.photos.get(currentIndex).tags.get("location").split(",");
+                    allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location").split(",");
             StringBuilder existingValueWithAddedValue =
-                    new StringBuilder(currentAlbum.photos.get(currentIndex).tags.get("location"));
+                    new StringBuilder(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
             existingValueWithAddedValue.append("," + tag);
-            currentAlbum.photos.get(currentIndex).tags.put("location", existingValueWithAddedValue.toString());
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put("location", existingValueWithAddedValue.toString());
         }
         TextView locationTags = (TextView) findViewById(R.id.locationTags);
         StringBuilder sbTags = new StringBuilder();
         sbTags.append("location: ");
-        sbTags.append(currentAlbum.photos.get(currentIndex).tags.get("location"));
+        sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
 
         /*
         if (sbTags.length() > 0) {
@@ -260,28 +326,30 @@ public class SelectedPhoto extends AppCompatActivity {
 
          */
         locationTags.setText(sbTags.toString());
-        System.out.println(sbTags.toString());
+        //System.out.println(sbTags.toString());
+
+        System.out.println(allAlbums.get(albumPosition).photos.get(photoPosition).tags);
 
         saveData();
     }
 
     private void addPersonTag(String tag) {
         System.out.println("the tag is " + tag);
-        if (!currentAlbum.photos.get(currentIndex).tags.containsKey("person")) {
-            currentAlbum.photos.get(currentIndex).tags.put("person", tag);
+        if (!allAlbums.get(albumPosition).photos.get(photoPosition).tags.containsKey("person")) {
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put("person", tag);
         }
         else {
             String[] existingValueDelimited =
-                    currentAlbum.photos.get(currentIndex).tags.get("person").split(",");
+                    allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person").split(",");
             StringBuilder existingValueWithAddedValue =
-                    new StringBuilder(currentAlbum.photos.get(currentIndex).tags.get("person"));
+                    new StringBuilder(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
             existingValueWithAddedValue.append("," + tag);
-            currentAlbum.photos.get(currentIndex).tags.put("person", existingValueWithAddedValue.toString());
+            allAlbums.get(albumPosition).photos.get(photoPosition).tags.put("person", existingValueWithAddedValue.toString());
         }
         TextView personTags = (TextView) findViewById(R.id.personTags);
         StringBuilder sbTags = new StringBuilder();
         sbTags.append("person: ");
-        sbTags.append(currentAlbum.photos.get(currentIndex).tags.get("person"));
+        sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
 
         /*
         if (sbTags.length() > 0) {
@@ -305,43 +373,35 @@ public class SelectedPhoto extends AppCompatActivity {
         builder.show();
     }
 
+
     private void deletePhoto() {
         int oldPosition = 0;
         // if not the first photo then we display the previous photo before we delete it
-        if (currentIndex > 0) {
-            oldPosition = currentIndex;
-            currentIndex--;
-            currentPhoto = currentAlbum.photos.get(currentIndex);
+        if (photoPosition > 0) {
+            oldPosition = photoPosition;
+            photoPosition--;
 
             ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
 
-            image.setImageURI(Uri.parse(currentPhoto.photoPath));
+            image.setImageURI(Uri.parse(allAlbums.get(albumPosition).photos.get(photoPosition).photoPath));
 
-            /*
 
-            int imageResource = getResources().getIdentifier(
-                    newPhoto.photoPath,
-                    null, this.getPackageName());
-
-            image.setImageResource(imageResource);
-
-             */
-
-            TextView selectedPhotoTags = (TextView) findViewById(R.id.personTags);
+            TextView personTags = (TextView) findViewById(R.id.personTags);
             StringBuilder sbTags = new StringBuilder();
-            for(String key: currentPhoto.tags.keySet()) {
-                sbTags.append(key);
-                sbTags.append("=");
-                sbTags.append(currentPhoto.tags.get(key));
-                sbTags.append("\n");
-            }
-            if (sbTags.length() > 0) {
-                sbTags.setLength(sbTags.length() - 1);
-            }
-            selectedPhotoTags.setText(sbTags.toString());
+            sbTags.append("person: ");
+            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
+
+            personTags.setText(sbTags.toString());
+
+            TextView locationTags = (TextView) findViewById(R.id.locationTags);
+            StringBuilder sb1Tags = new StringBuilder();
+            sb1Tags.append("location: ");
+            sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
+
+            locationTags.setText(sb1Tags.toString());
 
             // now we delete the photo and update photo position
-            currentAlbum.photos.remove(oldPosition);
+            allAlbums.get(albumPosition).photos.remove(oldPosition);
             saveData();
 
         }
@@ -349,49 +409,42 @@ public class SelectedPhoto extends AppCompatActivity {
         // if we are removing the first photo, then we display the photo that is next
         else {
             oldPosition = 0;
-            currentIndex++;
-            currentPhoto = currentAlbum.photos.get(currentIndex);
+            photoPosition++;
+            //currentPhoto = currentAlbum.photos.get(photoPosition);
 
             ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
-            image.setImageURI(Uri.parse(currentPhoto.photoPath));
+            image.setImageURI(Uri.parse(allAlbums.get(albumPosition).photos.get(photoPosition).photoPath));
 
-            /*
-
-            int imageResource = getResources().getIdentifier(
-                    newPhoto.photoPath,
-                    null, this.getPackageName());
-
-            image.setImageResource(imageResource);
-
-             */
-
-            TextView selectedPhotoTags = (TextView) findViewById(R.id.personTags);
+            TextView personTags = (TextView) findViewById(R.id.personTags);
             StringBuilder sbTags = new StringBuilder();
-            for(String key: currentPhoto.tags.keySet()) {
-                sbTags.append(key);
-                sbTags.append("=");
-                sbTags.append(currentPhoto.tags.get(key));
-                sbTags.append("\n");
-            }
-            if (sbTags.length() > 0) {
-                sbTags.setLength(sbTags.length() - 1);
-            }
-            selectedPhotoTags.setText(sbTags.toString());
+            sbTags.append("person: ");
+            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
 
-            // now we delete the photo
-            currentAlbum.photos.remove(oldPosition);
+            personTags.setText(sbTags.toString());
+
+            TextView locationTags = (TextView) findViewById(R.id.locationTags);
+            StringBuilder sb1Tags = new StringBuilder();
+            sb1Tags.append("location: ");
+            sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
+
+            locationTags.setText(sb1Tags.toString());
+
+            // now we delete the photo and update photo position
+            allAlbums.get(albumPosition).photos.remove(oldPosition);
             saveData();
         }
 
     }
 
+
+
     public void nextPhoto(View view) {
-        if (currentIndex < currentAlbum.photos.size() - 1) {
-            currentIndex++;
-            currentPhoto = currentAlbum.photos.get(currentIndex);
+        if (photoPosition < allAlbums.get(albumPosition).photos.size() - 1) {
+            photoPosition++;
+            //currentPhoto = allAlbums.get(albumPosition).photos.get(photoPosition);
 
             ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
-            image.setImageURI(Uri.parse(currentPhoto.photoPath));
+            image.setImageURI(Uri.parse(allAlbums.get(albumPosition).photos.get(photoPosition).photoPath));
 
             /*
 
@@ -403,29 +456,31 @@ public class SelectedPhoto extends AppCompatActivity {
 
              */
 
-            TextView selectedPhotoTags = (TextView) findViewById(R.id.personTags);
+            TextView personTags = (TextView) findViewById(R.id.personTags);
             StringBuilder sbTags = new StringBuilder();
-            for(String key: currentAlbum.photos.get(currentIndex).tags.keySet()) {
-                sbTags.append(key);
-                sbTags.append("=");
-                sbTags.append(currentAlbum.photos.get(currentIndex).tags.get(key));
-                sbTags.append("\n");
-            }
-            if (sbTags.length() > 0) {
-                sbTags.setLength(sbTags.length() - 1);
-            }
-            selectedPhotoTags.setText(sbTags.toString());
-            currentPhoto = currentAlbum.photos.get(currentIndex);
+            sbTags.append("person: ");
+            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
+
+            personTags.setText(sbTags.toString());
+
+            TextView locationTags = (TextView) findViewById(R.id.locationTags);
+            StringBuilder sb1Tags = new StringBuilder();
+            sb1Tags.append("location: ");
+            sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
+
+            locationTags.setText(sb1Tags.toString());
+            //currentPhoto = currentAlbum.photos.get(photoPosition);
+            saveData();
         }
     }
 
     public void previousPhoto(View view) {
-        if (currentIndex > 0) {
-            currentIndex--;
-            currentPhoto = currentAlbum.photos.get(currentIndex);
+        if (photoPosition > 0) {
+            photoPosition--;
+            //currentPhoto = currentAlbum.photos.get(photoPosition);
 
             ImageView image = (ImageView) findViewById(R.id.selectedPhoto);
-            image.setImageURI(Uri.parse(currentPhoto.photoPath));
+            image.setImageURI(Uri.parse(allAlbums.get(albumPosition).photos.get(photoPosition).photoPath));
 
             /*
 
@@ -437,19 +492,20 @@ public class SelectedPhoto extends AppCompatActivity {
 
              */
 
-            TextView selectedPhotoTags = (TextView) findViewById(R.id.personTags);
+            TextView personTags = (TextView) findViewById(R.id.personTags);
             StringBuilder sbTags = new StringBuilder();
-            for(String key: currentAlbum.photos.get(currentIndex).tags.keySet()) {
-                sbTags.append(key);
-                sbTags.append("=");
-                sbTags.append(currentAlbum.photos.get(currentIndex).tags.get(key));
-                sbTags.append("\n");
-            }
-            if (sbTags.length() > 0) {
-                sbTags.setLength(sbTags.length() - 1);
-            }
-            selectedPhotoTags.setText(sbTags.toString());
-            currentPhoto = currentAlbum.photos.get(currentIndex);
+            sbTags.append("person: ");
+            sbTags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
+
+            personTags.setText(sbTags.toString());
+
+            TextView locationTags = (TextView) findViewById(R.id.locationTags);
+            StringBuilder sb1Tags = new StringBuilder();
+            sb1Tags.append("location: ");
+            sb1Tags.append(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
+
+            locationTags.setText(sb1Tags.toString());
+            //currentPhoto = currentAlbum.photos.get(photoPosition);
             saveData();
 
         }
