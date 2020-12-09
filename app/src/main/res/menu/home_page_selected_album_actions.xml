@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/openAction"
+        android:title = "Open Album"/>
+    <item android:id="@+id/renameAction"
+        android:title = "Rename Album"/>
+    <item android:id="@+id/deleteAction"
+        android:title = "Delete Album"/>
+    <item android:id="@+id/cancelAction"
+        android:title = "Cancel"/>
+
+</menu>

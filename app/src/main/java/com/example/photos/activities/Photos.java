@@ -8,10 +8,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
+
 
 import com.example.photos.R;
 import com.example.photos.model.Album;
@@ -28,6 +31,7 @@ public class Photos extends AppCompatActivity {
 
     //listview element in UI
     private ListView listOfAlbums;
+    ArrayAdapter<Album> adapter;
 
     //internal storage that will populate the listview
     private ArrayList<Album> userAlbums;
@@ -47,8 +51,7 @@ public class Photos extends AppCompatActivity {
 
 
         //connects the source data to the listview
-        ArrayAdapter<Album> adapter =
-                new ArrayAdapter<>(this, R.layout.album, userAlbums);
+        adapter = new ArrayAdapter<>(this, R.layout.album, userAlbums);
         listOfAlbums.setAdapter(adapter);
 
 
@@ -64,7 +67,60 @@ public class Photos extends AppCompatActivity {
         */
 
         //it's a functional interface, so we can replace it with a lambda expression:
-        listOfAlbums.setOnItemClickListener((parents, view, position, id) -> transitionToTheSelectedAlbum(position));
+        listOfAlbums.setOnItemClickListener((parents, view, position, id) -> selectedAlbumActionOptions(position, view));
+
+
+
+    }
+
+    private void selectedAlbumActionOptions(int position, View v){
+        PopupMenu popUpActions = new PopupMenu(this, v);
+        popUpActions.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.openAction:
+                        transitionToTheSelectedAlbum(position);
+                        return true;
+                    case R.id.renameAction:
+                        promptRenameAlbum(position);
+                        return true;
+                    case R.id.deleteAction:
+                        deleteAlbum(position);
+                        return true;
+                    case R.id.cancelAction:
+                        popUpActions.dismiss();
+                        return true;
+                    default:
+                        return false;
+
+                }
+            }
+        });
+        popUpActions.inflate(R.menu.home_page_selected_album_actions);
+        popUpActions.show();
+
+    }
+    private void promptRenameAlbum(int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        EditText input = new EditText(this);
+        input.setHint("Rename album ");
+        builder.setView(input);
+        builder.setPositiveButton("Rename", ((dialog, which) -> renameAlbum(input.getText().toString(), position)));
+        builder.setNegativeButton("Cancel", ((dialog, which) -> dialog.cancel()));
+        builder.show();
+
+
+    }
+    private void renameAlbum(String newName, int position){
+        userAlbums.get(position).name = newName;
+        adapter.notifyDataSetChanged();
+        saveData();
+    }
+    private void deleteAlbum(int position){
+        userAlbums.remove(position);
+        adapter.notifyDataSetChanged();
+        saveData();
 
     }
     public boolean onCreateOptionsMenu(Menu menu){
@@ -237,6 +293,7 @@ public class Photos extends AppCompatActivity {
     }
     private void createNewAlbum(String newAlbumName){
         userAlbums.add(new Album(newAlbumName, null));
+        adapter.notifyDataSetChanged();
         saveData();
 
 
