@@ -266,6 +266,15 @@ public class SelectedPhoto extends AppCompatActivity {
             toast.show();
             return;
         }
+        // if there are no tags at all
+        if (allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location") == null) {
+            Context context = getApplicationContext();
+            CharSequence text = "Tag You Are Trying To Delete Does Not Exist";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
         String existingValue = allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location");
         String[] existingValueDelimited = existingValue.split(",");
         StringBuilder newValue = new StringBuilder();
@@ -318,6 +327,15 @@ public class SelectedPhoto extends AppCompatActivity {
         if (tag.equals("")) {
             Context context = getApplicationContext();
             CharSequence text = "No Tag Was Entered";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
+        // if there are no tags at all
+        if (allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person") == null) {
+            Context context = getApplicationContext();
+            CharSequence text = "Tag You Are Trying To Delete Does Not Exist";
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
@@ -391,12 +409,35 @@ public class SelectedPhoto extends AppCompatActivity {
             toast.show();
             return;
         }
+
+        // if tag already exists
+        if (allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location") != null) {
+            String existingValue = allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location");
+            String[] existing_Value_Delimited = existingValue.split(",");
+
+            boolean tagPresent = false;
+            for (String s : existing_Value_Delimited) {
+                if (s.equals(tag)) {
+                    tagPresent = true;
+                    break;
+                }
+            }
+            if (tagPresent) {
+                Context context = getApplicationContext();
+                CharSequence text = "Tag You Are Trying To Add Already Exists";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                return;
+            }
+        }
+
         if (!allAlbums.get(albumPosition).photos.get(photoPosition).tags.containsKey("location")) {
             allAlbums.get(albumPosition).photos.get(photoPosition).tags.put("location", tag);
         }
         else {
-            String[] existingValueDelimited =
-                    allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location").split(",");
+            //String[] existingValueDelimited =
+                    //allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location").split(",");
             StringBuilder existingValueWithAddedValue =
                     new StringBuilder(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("location"));
             existingValueWithAddedValue.append("," + tag);
@@ -424,12 +465,34 @@ public class SelectedPhoto extends AppCompatActivity {
             toast.show();
             return;
         }
+        // if tag already exists
+        if (allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person") != null) {
+            String existingValue = allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person");
+            String[] existing_Value_Delimited = existingValue.split(",");
+
+            boolean tagPresent = false;
+            for (String s : existing_Value_Delimited) {
+                if (s.equals(tag)) {
+                    tagPresent = true;
+                    break;
+                }
+            }
+            if (tagPresent) {
+                Context context = getApplicationContext();
+                CharSequence text = "Tag You Are Trying To Add Already Exists";
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                return;
+            }
+        }
+
         if (!allAlbums.get(albumPosition).photos.get(photoPosition).tags.containsKey("person")) {
             allAlbums.get(albumPosition).photos.get(photoPosition).tags.put("person", tag);
         }
         else {
-            String[] existingValueDelimited =
-                    allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person").split(",");
+            // String[] existingValueDelimited =
+                    //allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person").split(",");
             StringBuilder existingValueWithAddedValue =
                     new StringBuilder(allAlbums.get(albumPosition).photos.get(photoPosition).tags.get("person"));
             existingValueWithAddedValue.append("," + tag);
