@@ -292,6 +292,22 @@ public class Photos extends AppCompatActivity {
 
     }
     private void createNewAlbum(String newAlbumName){
+        if(newAlbumName.equals("")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Album name cannot be empty");
+            builder.show();
+            return;
+
+        }
+        for(Album album: userAlbums){
+            if(album.name.equals(newAlbumName)){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("An album already has this name");
+                builder.show();
+                return;
+
+            }
+        }
         userAlbums.add(new Album(newAlbumName, null));
         adapter.notifyDataSetChanged();
         saveData();
