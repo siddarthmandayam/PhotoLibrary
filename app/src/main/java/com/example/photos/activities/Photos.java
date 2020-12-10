@@ -113,6 +113,15 @@ public class Photos extends AppCompatActivity {
 
     }
     private void renameAlbum(String newName, int position){
+        for(Album album: userAlbums){
+            if(album.name.equals(newName)){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("An album already has this name");
+                builder.show();
+                return;
+
+            }
+        }
         userAlbums.get(position).name = newName;
         adapter.notifyDataSetChanged();
         saveData();
