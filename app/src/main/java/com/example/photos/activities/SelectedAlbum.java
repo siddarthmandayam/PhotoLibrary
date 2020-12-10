@@ -20,9 +20,12 @@ import com.example.photos.model.Album;
 import com.example.photos.model.ImageAdapter;
 import com.example.photos.model.Photo;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SelectedAlbum extends AppCompatActivity {
 
@@ -39,7 +42,6 @@ public class SelectedAlbum extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         allAlbums = getIntent().getExtras().getParcelableArrayList("allAlbums");
         position = getIntent().getExtras().getInt("position");
@@ -58,17 +60,21 @@ public class SelectedAlbum extends AppCompatActivity {
 
     }
 
+    public static final int PICK_IMAGE = 1;
+
+    public static final int BACK = 2;
+
+
     private void transitionToSelectedPhoto(int photoPosition){
         Intent intent = new Intent(this, SelectedPhoto.class);
         intent.putParcelableArrayListExtra("allAlbums", allAlbums);
         intent.putExtra("albumPosition", position);
         intent.putExtra("photoPosition", photoPosition);
-        startActivity(intent);
+        startActivityForResult(intent, BACK);
 
 
     }
 
-    public static final int PICK_IMAGE = 1;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -107,7 +113,13 @@ public class SelectedAlbum extends AppCompatActivity {
 
 
         }
-        else{
+        else if (requestCode == BACK){
+            if (resultCode == RESULT_OK) {
+                allAlbums = data.getParcelableArrayListExtra("allAlbums");
+                adapter = new ImageAdapter(allAlbums.get(position).photos, this);
+                //allAlbums.get(position).photos.add(new Photo("content://com.android.externalstorage.documents/document/primary%3ADownload%2FStockPhoto1.jpeg", null));
+                thumbnailGrid.setAdapter(adapter);
+            }
 
         }
     }
@@ -148,8 +160,6 @@ public class SelectedAlbum extends AppCompatActivity {
 
     }
 
-
-
     private void saveData(){
         SharedPreferences sharedP = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedP.edit();
@@ -157,6 +167,29 @@ public class SelectedAlbum extends AppCompatActivity {
         String json = gson.toJson(allAlbums);
         editor.putString("data", json);
         editor.apply();
+    }
+
+    private void loadData(){
+        SharedPreferences sharedP = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedP.getString("data", null);
+        Type type = new TypeToken<List<Album>>(){}.getType();
+        allAlbums = gson.fromJson(json, type);
+
+        if(allAlbums == null)
+            allAlbums = new ArrayList<Album>();
+
+        System.out.println("LOADING FOLLOWING DATA: ");
+
+        for(Album album: allAlbums){
+            System.out.println(album.name + " - ");
+            if(album.photos != null)
+                for(Photo photo: album.photos){
+                    System.out.println("path: " + photo.photoPath);
+                    System.out.println("tags: " + photo.tags);
+                }
+        }
+
     }
 
 

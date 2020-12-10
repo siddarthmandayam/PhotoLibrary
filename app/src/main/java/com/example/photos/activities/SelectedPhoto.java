@@ -2,6 +2,7 @@ package com.example.photos.activities;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -119,6 +120,40 @@ public class SelectedPhoto extends AppCompatActivity {
     }
 
     private void movePhotoToAlbum(String albumName) {
+        // if album name does not exist, display error message
+        boolean validName = false;
+        for (Album album : allAlbums) {
+            if (album.name.equals(albumName)) {
+                validName = true;
+                break;
+            }
+        }
+        if (!validName) {
+            Context context = getApplicationContext();
+            CharSequence text = "Album Does Not Exist";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
+        // if there is only 1 photo in the album, then we remove it and go back to selected album view
+        if (allAlbums.get(albumPosition).photos.size() == 1) {
+            for (Album album : allAlbums) {
+                if (album.name.equals(albumName)) {
+                    // add photo to new album
+                    Photo photoToRemove = allAlbums.get(albumPosition).photos.get(0);
+                    album.photos.add(photoToRemove);
+                    // remove photo from current album
+                    allAlbums.get(albumPosition).photos.remove(0);
+                    saveData();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putParcelableArrayListExtra("allAlbums", allAlbums);
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                    return;
+                }
+            }
+        }
         int oldPosition = 0;
         // if not the first photo then we display the previous photo before we delete it
         if (photoPosition > 0) {
@@ -156,6 +191,9 @@ public class SelectedPhoto extends AppCompatActivity {
                     // remove photo from current album
                     allAlbums.get(albumPosition).photos.remove(oldPosition);
                     saveData();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putParcelableArrayListExtra("allAlbums", allAlbums);
+                    setResult(RESULT_OK, resultIntent);
                     return;
                 }
             }
@@ -197,6 +235,9 @@ public class SelectedPhoto extends AppCompatActivity {
                     // remove photo from current album
                     allAlbums.get(albumPosition).photos.remove(oldPosition);
                     saveData();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putParcelableArrayListExtra("allAlbums", allAlbums);
+                    setResult(RESULT_OK, resultIntent);
                     return;
                 }
             }
@@ -416,6 +457,16 @@ public class SelectedPhoto extends AppCompatActivity {
 
 
     private void deletePhoto() {
+        // if there is only 1 photo in the album, then we delete it and go back to selected album view
+        if (allAlbums.get(albumPosition).photos.size() == 1) {
+            allAlbums.get(albumPosition).photos.remove(0);
+            saveData();
+            Intent resultIntent = new Intent();
+            resultIntent.putParcelableArrayListExtra("allAlbums", allAlbums);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+            return;
+        }
         int oldPosition = 0;
         // if not the first photo then we display the previous photo before we delete it
         if (photoPosition > 0) {
@@ -445,7 +496,9 @@ public class SelectedPhoto extends AppCompatActivity {
             // now we delete the photo and update photo position
             allAlbums.get(albumPosition).photos.remove(oldPosition);
             saveData();
-
+            Intent resultIntent = new Intent();
+            resultIntent.putParcelableArrayListExtra("allAlbums", allAlbums);
+            setResult(RESULT_OK, resultIntent);
         }
 
         // if we are removing the first photo, then we display the photo that is next
@@ -476,6 +529,9 @@ public class SelectedPhoto extends AppCompatActivity {
             // now we delete the photo and update photo position
             allAlbums.get(albumPosition).photos.remove(oldPosition);
             saveData();
+            Intent resultIntent = new Intent();
+            resultIntent.putParcelableArrayListExtra("allAlbums", allAlbums);
+            setResult(RESULT_OK, resultIntent);
         }
 
     }
