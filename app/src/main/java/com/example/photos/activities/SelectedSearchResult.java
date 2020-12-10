@@ -12,6 +12,8 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -59,6 +61,25 @@ public class SelectedSearchResult extends AppCompatActivity {
             sb1Tags.append(allPhotos.get(photoPosition).tags.get("location"));
         }
         locationTags.setText(sb1Tags.toString());
+    }
+
+    /*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.photo_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+     */
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void nextPhoto(View view) {

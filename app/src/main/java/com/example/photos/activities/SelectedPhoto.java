@@ -45,6 +45,8 @@ public class SelectedPhoto extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
 
         allAlbums = getIntent().getExtras().getParcelableArrayList("allAlbums");
         albumPosition = getIntent().getExtras().getInt("albumPosition");
@@ -95,6 +97,9 @@ public class SelectedPhoto extends AppCompatActivity {
                 return true;
             case R.id.delete_photo_action:
                 promptUserDeletePhoto();
+                return true;
+            case android.R.id.home:
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
