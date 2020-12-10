@@ -49,6 +49,7 @@ public class SearchResults extends AppCompatActivity {
     private void transitionToSelectedPhoto(int photoPosition){
         Intent intent = new Intent(this, SelectedSearchResult.class);
         intent.putParcelableArrayListExtra("allPhotos", searchResults);
+        intent.putExtra("photoPosition", photoPosition);
         startActivity(intent);
 
 

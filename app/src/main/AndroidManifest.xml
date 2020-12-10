@@ -14,7 +14,8 @@
         <activity
             android:name=".activities.SelectedSearchResult"
             android:label="@string/title_activity_selected_search_result"
-            android:theme="@style/Theme.Photos.NoActionBar"></activity>
+            android:theme="@style/Theme.Photos.NoActionBar"
+            android:parentActivityName=".activities.SearchResults"></activity>
         <activity
             android:name=".activities.SearchResults"
             android:label="@string/title_activity_search_results"
