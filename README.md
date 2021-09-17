@@ -1,3 +1,3 @@
 # PhotoLibrary
 
-Designed a Photo Library inAndroid Studiowith several functions such as creating albums,  adding and deletingphotos, and writing captions usingJava(back-end) andXML(front-end)
+Designed a Photo Library in Android Studio with several functions such as creating albums,  adding and deleting photos, and writing captions using Java(back-end) and XML(front-end)
